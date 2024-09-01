@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, initial-scale=0.9">
+    <title>Interactive Translation Services</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: linear-gradient(135deg, rgba(10, 10, 10, 0.9), rgba(31, 31, 31, 0.9)),
+                url('https://images.unsplash.com/photo-1517814355281-7f95ca20d37c') no-repeat center center fixed;
+            background-size: cover;
+            color: #e0e0e0;
+            font-family: 'Orbitron', sans-serif;
+            overflow-x: hidden;
+            perspective: 1000px;
+            position: relative;
+            height: 100vh;
+            line-height: 1.6;
+            transform: scale(0.9);
+        }
+
+        /* 3D Sci-Fi Background Layers */
+        .sci-fi-bg {
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            top: -25%;
+            left: -25%;
+            background: radial-gradient(circle, rgba(0, 204, 255, 0.15) 20%, rgba(0, 0, 0, 0) 70%);
+            pointer-events: none;
+            z-index: 0;
+            animation: rotateBg 60s linear infinite;
+            transform: rotateX(60deg) rotateZ(45deg);
+        }
+
+        @keyframes rotateBg {
+            from {
+                transform: rotateX(60deg) rotateZ(0deg);
+            }
+
+            to {
+                transform: rotateX(60deg) rotateZ(360deg);
+            }
+        }
+
+        /* Intro Section */
+        #intro {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeOutIntro 6s forwards 3s;
+        }
+
+        #intro-text {
+            font-size: 3em;
+            color: #00ccff;
+            text-shadow: 0 0 15px rgba(0, 204, 255, 0.7);
+            animation: pulseText 1.5s infinite alternate;
+        }
+
+        @keyframes fadeOutIntro {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        @keyframes pulseText {
+            from {
+                text-shadow: 0 0 15px rgba(0, 204, 255, 0.7);
+            }
+
+            to {
+                text-shadow: 0 0 30px rgba(0, 204, 255, 1);
+            }
+        }
+
+        /* Matrix Effect */
+        #matrix {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 500;
+            background-color: rgba(10, 10, 10, 0.2);
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        /* Vertical and Horizontal Lines with 3D Lights */
+        .vertical-lines,
+        .horizontal-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            animation: moveLines 10s linear infinite;
+            box-shadow: 0 0 30px rgba(0, 204, 255, 0.5);
+        }
+
+        .vertical-lines::before,
+        .horizontal-lines::before,
+        .vertical-lines::after,
+        .horizontal-lines::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(0, 204, 255, 0.7), rgba(255, 255, 255, 0.2));
+            animation: moveLines 10s linear infinite;
+        }
+
+        .vertical-lines::before {
+            left: 20%;
+        }
+
+        .vertical-lines::after {
+            left: 40%;
+            animation-delay: -5s;
+        }
+
+        .vertical-right-lines::before,
+        .vertical-right-lines::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(0, 204, 255, 0.7), rgba(255, 255, 255, 0.2));
+            animation: moveLines 10s linear infinite;
+        }
+
+        .vertical-right-lines::before {
+            right: 20%;
+        }
+
+        .vertical-right-lines::after {
+            right: 10%;
+            animation-delay: -5s;
+        }
+
+        .horizontal-lines::before,
+        .horizontal-lines::after {
+            top: 20%;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, rgba(0, 204, 255, 0.7), rgba(255, 255, 255, 0.2));
+        }
+
+        .horizontal-lines::before {
+            top: 20%;
+        }
+
+        .horizontal-lines:nth-child(2)::before {
+            top: 40%;
+        }
+
+        .horizontal-lines:nth-child(3)::before {
+            top: 60%;
+        }
+
+        .horizontal-lines:nth-child(4)::before {
+            top: 80%;
+        }
+
+        @keyframes moveLines {
+            0% {
+                transform: translateY(100%);
+            }
+
+            100% {
+                transform: translateY(-100%);
+            }
+        }
+
+        @keyframes moveHorizontalLines {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* HUD Profile Photo */
+        .photo-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 4;
+            border: 2px solid rgba(0, 204, 255, 0.7);
+            perspective: 1000px;
+            transform-style: preserve-3d;
+            animation: floatPhoto 6s ease-in-out infinite;
+        }
+
+        @keyframes floatPhoto {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .photo-container img {
+            width: 70%;
+            height: 70%;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 0 30px rgba(0, 204, 255, 0.5);
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            color: #00ccff;
+            padding: 100px 20px 50px;
+            position: relative;
+            text-align: center;
+            z-index: 2;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(0, 204, 255, 0.6), inset 0 0 15px rgba(0, 204, 255, 0.5);
+            backdrop-filter: blur(15px);
+        }
+
+        header h1,
+        header h2 {
+            margin: 0;
+            text-transform: uppercase;
+            text-shadow: 0 0 25px #00ccff, 0 0 40px #00ccff;
+            cursor: pointer;
+        }
+
+        header h1 {
+            font-size: 4em;
+        }
+
+        header h2 {
+            font-size: 2em;
+            margin-top: 10px;
+        }
+
+        nav {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 204, 255, 0.2);
+            z-index: 3;
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 204, 255, 0.5);
+        }
+
+        nav a {
+            color: #e0e0e0;
+            text-decoration: none;
+            margin: 0 20px;
+            font-size: 1.5em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease, color 0.5s;
+        }
+
+        nav a:hover {
+            color: #00ccff;
+            text-shadow: 0 0 10px #00ccff, 0 0 20px #00ccff;
+        }
+
+        section {
+            padding: 100px 20px;
+            text-align: center;
+            z-index: 2;
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 204, 255, 0.5);
+            box-shadow: 0 0 30px rgba(0, 204, 255, 0.6), inset 0 0 15px rgba(0, 204, 255, 0.5);
+        }
+
+        section h2 {
+            font-size: 3em;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            color: #00ccff;
+            text-shadow: 0 0 30px #00ccff, 0 0 50px #00ccff;
+        }
+
+        section p {
+            font-size: 1.5em;
+            margin-bottom: 40px;
+            color: #e0e0e0;
+            text-shadow: 0 0 15px #00ccff;
+        }
+
+        .button-3d {
+            background: rgba(0, 204, 255, 0.85);
+            color: #0a0a0a;
+            padding: 20px 40px;
+            font-size: 1.7em;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.5s, box-shadow 0.5s, background-color 0.5s;
+            border-radius: 15px;
+            box-shadow: 0 15px 30px rgba(0, 204, 255, 0.3), 0 0 30px rgba(0, 204, 255, 0.6);
+            text-transform: uppercase;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 204, 255, 0.5);
+            transform-style: preserve-3d;
+        }
+
+        .button-3d:hover {
+            transform: translateY(-15px) scale(1.2);
+            box-shadow: 0 20px 40px rgba(0, 204, 255, 0.5), 0 0 50px rgba(0, 204, 255, 0.7);
+            color: #ff6600;
+        }
+
+        footer {
+            background: rgba(10, 10, 10, 0.85);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            text-shadow: 0 0 15px #00ccff;
+            box-shadow: 0 -4px 8px rgba(0, 204, 255, 0.2);
+            z-index: 2;
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 204, 255, 0.5);
+        }
+
+        .footer-icons img {
+            width: 40px;
+            margin: 0 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .footer-icons img:hover {
+            transform: scale(1.3);
+        }
+
+        .contact-form {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 15px 30px rgba(0, 204, 255, 0.5), 0 0 30px rgba(0, 204, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 204, 255, 0.5);
+            transform-style: preserve-3d;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 20px;
+            margin: 15px 0;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 204, 255, 0.3);
+            font-size: 1.2em;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 204, 255, 0.5);
+        }
+
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            outline: none;
+            box-shadow: 0 10px 30px rgba(0, 204, 255, 0.5);
+        }
+
+        .contact-form button {
+            width: 100%;
+            padding: 20px;
+            border: none;
+            border-radius: 10px;
+            background-color: #00ccff;
+            color: #0a0a0a;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: background-color 0.5s, transform 0.5s;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 204, 255, 0.5);
+            transform-style: preserve-3d;
+        }
+
+        .contact-form button:hover {
+            background-color: #ff6600;
+            transform: scale(1.1);
+        }
+
+        /* Circular Buttons */
+        .circular-button,
+        .portfolio-button,
+        .transformation-button,
+        .robotika-button,
+        .download-resume-button,
+        .languages-services-button,
+        .schedule-meeting-button {
+            position: fixed;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(0, 204, 255, 0.85);
+            color: #0a0a0a;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(0, 204, 255, 0.5), 0 0 50px rgba(0, 204, 255, 0.7);
+            cursor: pointer;
+            z-index: 10;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-transform: uppercase;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 204, 255, 0.5);
+        }
+
+        .circular-button:hover,
+        .portfolio-button:hover,
+        .transformation-button:hover,
+        .robotika-button:hover,
+        .download-resume-button:hover,
+        .languages-services-button:hover,
+        .schedule-meeting-button:hover {
+            transform: translateY(-10px) scale(1.2);
+            box-shadow: 0 0 50px rgba(0, 204, 255, 0.7), 0 0 20px #00ccff, inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* 3D Light Effect Display Box for Business Card */
+        .business-card-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 640px;
+            height: 360px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(0, 204, 255, 0.6), 0 0 60px rgba(255, 255, 255, 0.3), 0 0 80px rgba(0, 204, 255, 0.8);
+            transform: translate(-50%, -50%) scale(0.6);
+            z-index: 20;
+            overflow: hidden;
+            animation: showModal 0.5s ease-out forwards;
+            perspective: 1000px;
+            background-size: cover;
+            background-position: center;
+            backdrop-filter: blur(15px);
+        }
+
+        .business-card-modal.active {
+            display: block;
+            transform: translate(-50%, -50%) rotateY(0deg) scale(1);
+            transition: transform 0.5s ease;
+        }
+
+        .business-card-modal.inactive {
+            transform: translate(-50%, -50%) rotateY(0deg) scale(1);
+            animation: none;
+            box-shadow: 0 0 20px rgba(0, 204, 255, 0.4);
+        }
+
+        .business-card-modal.static {
+            display: block;
+            animation: none;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        @keyframes showModal {
+            0% {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Minimize Button */
+        .minimize-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #00ccff;
+            color: #0a0a0a;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 204, 255, 0.4);
+        }
+
+        .minimize-button:hover {
+            background-color: #ff6600;
+            transform: scale(1.1);
+        }
+
+        /* Robotika Mode Effects */
+        .robotika-mode .business-card-modal {
+            background: linear-gradient(135deg, #003366 25%, #00ccff);
+            box-shadow: 0 0 40px rgba(0, 102, 204, 0.8), 0 0 60px rgba(0, 255, 255, 0.4);
+        }
+
+        .robotika-mode .minimize-button {
+            background-color: #003366;
+            color: #00ccff;
+        }
+
+        .robotika-mode .minimize-button:hover {
+            background-color: #00ccff;
+            color: #003366;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.5em;
+            }
+
+            header h2 {
+                font-size: 1.5em;
+            }
+
+            nav a {
+                margin: 0 10px;
+                font-size: 1.2em;
+            }
+
+            .photo-container {
+                width: 200px;
+                height: 200px;
+            }
+
+            .button-3d {
+                padding: 15px 30px;
+                font-size: 1.5em;
+            }
+
+            section h2 {
+                font-size: 2.5em;
+            }
+
+            section p {
+                font-size: 1.2em;
+            }
+
+            .circular-button,
+            .portfolio-button,
+            .transformation-button,
+            .robotika-button,
+            .download-resume-button,
+            .languages-services-button,
+            .schedule-meeting-button {
+                width: 90px;
+                height: 90px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Intro Section -->
+    <div id="intro">
+        <div id="intro-text">Welcome to Interactive Translation Services</div>
+    </div>
+
+    <!-- Matrix Particle Effect -->
+    <div id="matrix"></div>
+
+    <!-- Vertical and Horizontal Lines with 3D Lights -->
+    <div class="vertical-lines"></div>
+    <div class="vertical-right-lines"></div>
+    <div class="horizontal-lines"></div>
+    <div class="horizontal-lines"></div>
+    <div class="horizontal-lines"></div>
+    <div class="horizontal-lines"></div>
+
+    <!-- Sci-Fi Background Layer -->
+    <div class="sci-fi-bg"></div>
+
+    <!-- HUD Profile Photo -->
+    <div class="photo-container">
+        <img src="your-profile-photo.jpg" alt="Profile">
+    </div>
+
+    <!-- Buttons -->
+    <button class="portfolio-button" id="portfolioButton">Portfolio</button>
+    <button class="circular-button" id="gibranCardButton">Gibran Card</button>
+    <button class="transformation-button" onclick="startTransformation()">Transformation</button>
+    <button class="robotika-button" onclick="activateRobotikaMode()">Robotika Mode</button>
+
+    <!-- Download Resume Button -->
+    <a href="path-to-your-resume.pdf" download="Resume.pdf">
+        <button class="download-resume-button">Download Resume</button>
+    </a>
+
+    <!-- Languages Services Button -->
+    <button class="languages-services-button">Languages Services</button>
+
+    <!-- Schedule Meeting Button -->
+    <button class="schedule-meeting-button" id="scheduleMeetingButton">Schedule Meeting</button>
+
+    <!-- Business Card Modal with Minimize Button -->
+    <div class="business-card-modal" id="businessCardModal">
+        <button class="minimize-button" id="minimizeButton">Minimize</button>
+    </div>
+
+    <header>
+        <h1>Interactive Translation Services</h1>
+        <h2>Tech-Driven Solutions for Translators</h2>
+    </header>
+
+    <nav>
+        <a href="#services">Services</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <a href="#testimonials">Testimonials</a>
+    </nav>
+
+    <section id="services">
+        <h2>Our Services</h2>
+        <p>Expert translation services tailored to your domain-specific needs with cutting-edge technology.</p>
+        <button class="button-3d">Explore Services</button>
+    </section>
+
+    <section id="about">
+        <h2>About Us</h2>
+        <p>Learn more about our innovative approach to translation and language services.</p>
+        <button class="button-3d">Learn More</button>
+    </section>
+
+    <section id="contact">
+        <h2>Contact Us</h2>
+        <div class="contact-form">
+            <input type="text" placeholder="Your Name" required>
+            <input type="email" placeholder="Your Email" required>
+            <textarea placeholder="Your Message" required></textarea>
+            <button type="submit">Send Message</button>
+        </div>
+    </section>
+
+    <section id="testimonials">
+        <h2>What Our Clients Say</h2>
+        <div class="testimonial-carousel">
+            <div>
+                <p>"Outstanding translation services!" - Client A</p>
+            </div>
+            <div>
+                <p>"Highly professional and detail-oriented." - Client B</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Interactive Translation Services. All Rights Reserved.</p>
+        <div class="footer-icons">
+            <img src="facebook-icon.png" alt="Facebook">
+            <img src="twitter-icon.png" alt="Twitter">
+            <img src="linkedin-icon.png" alt="LinkedIn">
+        </div>
+    </footer>
+
+    <script>
+        // Matrix Effect
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        document.getElementById('matrix').appendChild(canvas);
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const matrixChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%';
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+
+        for (let x = 0; x < columns; x++) drops[x] = 1;
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#00ccff';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = matrixChars.charAt(Math.floor(Math.random() * matrixChars.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 35);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Intro Fade Out
+        setTimeout(() => {
+            document.getElementById('intro').style.display = 'none';
+            document.getElementById('matrix').style.display = 'none';
+        }, 9000);
+
+        // Transformation Effects
+        function startTransformation() {
+            const transformations = [
+                { bg: 'linear-gradient(135deg, #ffffff 25%, #e0f7ff)', color: '#003366' },
+                { bg: 'linear-gradient(135deg, #003300 25%, #000000)', color: '#00cc00' },
+                { bg: 'linear-gradient(135deg, #ff0000 25%, #0000ff)', color: '#00ffff' },
+                { bg: 'linear-gradient(135deg, #0000ff 25%, #ffff00)', color: '#003366' },
+            ];
+
+            transformations.forEach((t, i) => {
+                setTimeout(() => transformWebsite(t.bg, t.color), i * 5000);
+            });
+
+            setTimeout(resetWebsite, transformations.length * 5000);
+        }
+
+        function transformWebsite(bgColor, textColor) {
+            document.body.style.background = bgColor;
+            document.body.style.color = textColor;
+
+            document.querySelectorAll('header, nav, section, footer').forEach(el => {
+                el.style.backgroundColor = bgColor;
+                el.style.color = textColor;
+            });
+
+            document.querySelectorAll('nav a, .button-3d, .circular-button, .transformation-button, .robotika-button, .download-resume-button, .languages-services-button, .schedule-meeting-button').forEach(el => {
+                el.style.color = textColor;
+                el.style.backgroundColor = bgColor;
+            });
+
+            document.querySelector('.photo-container img').style.boxShadow = `0 0 30px ${textColor}, 0 0 60px rgba(255, 255, 255, 0.3)`;
+        }
+
+        function resetWebsite() {
+            document.body.style.background = '';
+            document.body.style.color = '';
+
+            document.querySelectorAll('header, nav, section, footer').forEach(el => {
+                el.style.backgroundColor = '';
+                el.style.color = '';
+            });
+
+            document.querySelectorAll('nav a, .button-3d, .circular-button, .transformation-button, .robotika-button, .download-resume-button, .languages-services-button, .schedule-meeting-button').forEach(el => {
+                el.style.color = '';
+                el.style.backgroundColor = '';
+            });
+
+            document.querySelector('.photo-container img').style.boxShadow = '';
+        }
+
+        // Robotika Mode
+        function activateRobotikaMode() {
+            document.body.classList.toggle('robotika-mode');
+        }
+
+        // Schedule Meeting Button Alignment
+        document.getElementById('scheduleMeetingButton').addEventListener('click', () => {
+            const buttons = document.querySelectorAll('.circular-button, .portfolio-button, .transformation-button, .robotika-button, .download-resume-button, .languages-services-button');
+            let topOffset = document.getElementById('scheduleMeetingButton').getBoundingClientRect().bottom + 20;
+            const leftPosition = document.getElementById('scheduleMeetingButton').getBoundingClientRect().left;
+
+            buttons.forEach(button => {
+                button.style.position = 'fixed';
+                button.style.left = `${leftPosition}px`;
+                button.style.top = `${topOffset}px`;
+                topOffset += 140;
+            });
+        });
+    </script>
+</body>
+
+</html>
